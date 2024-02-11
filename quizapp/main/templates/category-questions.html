@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block title %}{{category.title}} Questions{% endblock %}
+{% block content %}
+<h3 class="my-4"> Category: <span class="text-primary">{{category.title}}</span></h3> 
+    
+    <div class="card my-4  border-dark shadow">
+        <h4 class= "card-header border-dark">{{question.question}}<span class="timer float-end"></span></h4>
+    <form method = "post" action="{% url 'submit_answer' category.id question.id %}">
+        {% csrf_token %}
+            <div class = "card-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <td><input value="{{question.opt_1}}" id= "option_1" name="answer" type="radio"/></td>
+                        <th><label for="option_1">{{question.opt_1}}</label></th>
+                    </tr>
+                    <tr>
+                        <td><input value="{{question.opt_2}}" id= "option_2" name="answer" type="radio"/></td>
+                        <th><label for="option_2">{{question.opt_2}}</label></th>
+                    </tr><tr>
+                        <td><input value="{{question.opt_3}}" id= "option_3" name="answer" type="radio"/></td>
+                        <th><label for="option_3">{{question.opt_3}}</label></th>
+                    </tr><tr>
+                        <td><input value="{{question.opt_4}}" id= "option_4" name="answer" type="radio"/></td>
+                        <th><label for="option_4">{{question.opt_4}}</label></th>
+                    </tr>
+                </table>
+            </div>
+        <div class="card-footer">
+        <input type="submit" name="skip" value="Skip" class="btn btn-warning skipBtn"/>
+        <input type="submit" name="submit" value="Submit" class="btn btn-primary submitBtn"/>
+        </div>
+    </form>
+    </div>   
+<script type="text/javascript" src="{% static 'jquery-3.5.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'jQuery-countdownTimer-master/jquery.countdownTimer.min.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".submitBtn").on('click',function(){
+           var _checkedAns=$("input[name='answer']:checked").val();
+           if(_checkedAns==undefined){
+            alert('Please select option !');
+            return false;
+           }
+        });
+        $(".timer").countdowntimer({
+            seconds :"{{question.time_limit}}" ,
+            size : "sm",
+            timeUp:function(){
+                $(".skipBtn").trigger('click');
+            }
+        });
+    
+    });
+</script>
+{% endblock %}
